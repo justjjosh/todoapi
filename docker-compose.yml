@@ -1,0 +1,24 @@
+services:
+  # Service 1: The Database
+  db:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=todouser
+      - POSTGRES_PASSWORD=todopass
+      - POSTGRES_DB=tododb
+
+  # Service 2: Your API
+  web:
+    image: justjjosh/todoapi:v1.0.0
+    ports:
+      - "8001:8001"
+    environment:
+      # Notice the host is 'db', not 'localhost' or 'host.docker.internal'
+      - DATABASE_URL=postgresql://todouser:todopass@db/tododb
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
