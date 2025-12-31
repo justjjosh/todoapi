@@ -5,9 +5,9 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_USER=todouser
-      - POSTGRES_PASSWORD=todopass
-      - POSTGRES_DB=tododb
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
 
   # Service 2: Your API
   web:
@@ -15,8 +15,7 @@ services:
     ports:
       - "8001:8001"
     environment:
-      # Notice the host is 'db', not 'localhost' or 'host.docker.internal'
-      - DATABASE_URL=postgresql://todouser:todopass@db/tododb
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db/${POSTGRES_DB}
     depends_on:
       - db
 
