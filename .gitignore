@@ -3,5 +3,5 @@ __pycache__/
 .venv/
 .env
 .DS_Store
-*.pem
 copilot-instructions.md
+*.pem
