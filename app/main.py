@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from . import crud, schemas
 from .database import SessionLocal
+from app.database import get_db
 
 app = FastAPI()
 
@@ -21,13 +22,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-#adding dependencies
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
     
 
 @app.get("/")
