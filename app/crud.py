@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from . import models, schemas
+from . import models, schemas, auth
 
 def create_todo(db: Session, todo: schemas.TodoCreate) -> models.Todo:
     #create a new_todo model instance
@@ -51,3 +51,19 @@ def delete_todo(db: Session, todo_id: int) -> models.Todo | None:
     db.delete(del_todo)
     db.commit()
     return del_todo
+
+def create_user(db: Session, user: schemas.UserCreate) -> models.User:
+    username = user.username
+    email = user.email
+    password = user.password
+
+    db_user = models.User(
+        username=username,
+        email = email,
+        hashed_password = auth.hash_password(password)
+    )
+
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
