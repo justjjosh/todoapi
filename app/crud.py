@@ -1,9 +1,9 @@
 from sqlalchemy.orm import Session
 from . import models, schemas, auth
 
-def create_todo(db: Session, todo: schemas.TodoCreate) -> models.Todo:
+def create_todo(db: Session, todo: schemas.TodoCreate, user_id: int) -> models.Todo:
     #create a new_todo model instance
-    new_todo = models.Todo(**todo.model_dump())
+    new_todo = models.Todo(**todo.model_dump(), user_id=user_id)
 
     #stages the object for insertion without saving yet
     db.add(new_todo)
@@ -67,3 +67,6 @@ def create_user(db: Session, user: schemas.UserCreate) -> models.User:
     db.commit()
     db.refresh(db_user)
     return db_user
+
+def get_user(db: Session, username: str) -> models.User:
+    return db.query(models.User).filter(models.User.username == username).first()

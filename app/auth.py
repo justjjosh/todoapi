@@ -1,10 +1,12 @@
 from passlib.context import CryptContext
+from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 import datetime
 import os
 from dotenv import load_dotenv
 
-
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 pwd_context = CryptContext (
     schemes=["bcrypt"],
     deprecated="auto",
@@ -36,6 +38,14 @@ def verify_token(token: str) -> dict | None:
     except Exception as e:
         print(f"JWT verification failed: {e}")
         return None
+    
+def get_current_user(token: str = Depends(oauth2_scheme)) -> int | None:
+    verified_token = verify_token(token)
+    if verified_token is None:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    
+    user_id = verified_token["sub"]
+    return user_id
     
 if __name__ == "__main__":
     password = "mypassword1"
